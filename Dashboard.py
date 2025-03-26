@@ -17,16 +17,16 @@ if uploaded_file is not None:
         {'R$': ''}, regex=True).astype(int)
     df['Link_clicks'] = pd.to_numeric(
         df['Link_clicks'], errors='coerce').fillna(0).astype(int)
-    df['Conversion'] = pd.to_numeric(
-        df['Conversion'], errors='coerce').fillna(0).astype(int)
+    df['Conversions'] = pd.to_numeric(
+        df['Conversions'], errors='coerce').fillna(0).astype(int)
 
     # Cálculo de KPIs
     kpi1 = df.groupby(df['Date'].dt.strftime('%Y-%m'))['Amount_spent'].sum()
-    kpi2 = df.groupby(df['Date'].dt.strftime('%Y-%m'))['Conversion'].sum()
+    kpi2 = df.groupby(df['Date'].dt.strftime('%Y-%m'))['Conversions'].sum()
     kpi3 = df.groupby(df['Date'].dt.strftime('%Y-%m'))['Link_clicks'].sum()
     kpi4 = df.groupby(df['Date'].dt.strftime('%Y-%m'))['Amount_spent'].sum() / \
         df.groupby(df['Date'].dt.strftime('%Y-%m')
-                   )['Conversion'].sum().fillna(0)
+                   )['Conversions'].sum().fillna(0)
 
     # Exibição dos dados
     st.write("### Amostra dos Dados")
@@ -61,11 +61,11 @@ if uploaded_file is not None:
                  ).replace([float("inf"), float("nan")], 0)
     df["CPM"] = (df["Amount_spent"] / df["Impressions"] *
                  1000).replace([float("inf"), float("nan")], 0)
-    df["CPA"] = (df["Amount_spent"] / df["Conversion"]
+    df["CPA"] = (df["Amount_spent"] / df["Conversions"]
                  ).replace([float("inf"), float("nan")], 0)
     df["CTR (%)"] = (df["Amount_spent"] / df["Impressions"]
                      * 100).replace([float("inf"), float("nan")], 0)
-    df["Conversion Rate (%)"] = (df["Conversion"] / df["Link_clicks"]
+    df["Conversion Rate (%)"] = (df["Conversions"] / df["Link_clicks"]
                                  * 100).replace([float("inf"), float("nan")], 0)
 
     # Análises Mensais Interativas
@@ -75,7 +75,7 @@ if uploaded_file is not None:
     selected_month = st.selectbox("Selecione o Mês para Análise", months)
 
     column_options = ["Amount_spent",
-                      "Link_clicks", "Impressions", "Conversion"]
+                      "Link_clicks", "Impressions", "Conversions"]
     selected_column = st.selectbox(
         "Selecione o KPI para Análise", column_options)
 
@@ -87,9 +87,9 @@ if uploaded_file is not None:
 
     fig_mensal = px.bar(
         daily_summary,
-        x="Dia",
+        x="Day",
         y=selected_column,
-        title=f"Dia{selected_column} in {selected_month}",
+        title=f"Day{selected_column} in {selected_month}",
         labels={"Day": "Dia do Mês", selected_month: selected_column}
     )
 
